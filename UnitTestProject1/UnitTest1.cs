@@ -76,6 +76,11 @@ namespace UnitTestProject1
             {
                 Assert.Fail("ˆÙ‚È‚é—áŠO‚ª”­¶‚µ‚Ü‚µ‚½");
             }
+
+            var actual = new CorporateSetting();
+            await actual.ReadFromDB();
+            Assert.AreNotEqual("İ’èî•ñ1", actual.Item1);
+            Assert.AreNotEqual("İ’èî•ñ2", actual.Item2);
         }
     }
 }
