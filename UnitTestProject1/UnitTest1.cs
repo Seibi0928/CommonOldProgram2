@@ -23,6 +23,7 @@ namespace UnitTestProject1
             var actual = new CorporateSetting(api);
             await actual.ReadFromDB();
 
+            Assert.AreEqual(setting.CooperatedId, actual.CooperatedId);
             Assert.AreEqual(setting.Item1, actual.Item1);
             Assert.AreEqual(setting.Item2, actual.Item2);
         }

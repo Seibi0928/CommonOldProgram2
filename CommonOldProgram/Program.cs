@@ -36,6 +36,10 @@ namespace CommonOldProgram
 
     public class CorporateSetting
     {
+        private static string item1 = "";
+        private static string item2 = "";
+        private static int cooperatedId = -1;
+
         public string Item1 { get; set; }
         public string Item2 { get; set; }
         /// <summary>
@@ -60,20 +64,29 @@ namespace CommonOldProgram
                 throw new HttpRequestException("API連携に失敗しました");
             }
 
-            await SaveDB(cooperatedId);
+            CooperatedId = cooperatedId;
+
+            await SaveDB();
         }
 
-        private static async Task SaveDB(int cooperatedId)
+        private async Task SaveDB()
         {
-            await Task.Run(() => { /*DBへ保存*/ });
+            await Task.Run(() =>
+            {
+                /*DBへ保存*/
+                item1 = Item1;
+                item2 = Item2;
+                cooperatedId = CooperatedId;
+            });
         }
 
         public async Task ReadFromDB()
         {
             await Task.Run(() =>
             {
-                Item1 = "設定情報1";
-                Item2 = "設定情報2";
+                Item1 = item1;
+                Item2 = item2;
+                CooperatedId = cooperatedId;
             });
         }
     }
