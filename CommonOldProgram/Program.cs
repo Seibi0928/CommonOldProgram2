@@ -5,6 +5,14 @@ using System.Threading.Tasks;
 
 namespace CommonOldProgram
 {
+    class Program
+    {
+        public static void Main(params string[] args)
+        {
+
+        }
+    }
+
     public class CorporateSetting
     {
         private readonly string apiUrl = "https://example.com/2";
