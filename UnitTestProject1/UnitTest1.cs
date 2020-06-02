@@ -21,6 +21,7 @@ namespace UnitTestProject1
             var actual = new CorporateSetting();
             await actual.ReadFromDB();
 
+            Assert.AreEqual(setting.CooperatedId, actual.CooperatedId);
             Assert.AreEqual(setting.Item1, actual.Item1);
             Assert.AreEqual(setting.Item2, actual.Item2);
         }
@@ -73,6 +74,11 @@ namespace UnitTestProject1
             {
                 Assert.Fail("ˆÙ‚È‚é—áŠO‚ª”­¶‚µ‚Ü‚µ‚½");
             }
+
+            var actual = new CorporateSetting();
+            await actual.ReadFromDB();
+            Assert.AreNotEqual("İ’èî•ñ1", actual.Item1);
+            Assert.AreNotEqual("İ’èî•ñ2", actual.Item2);
         }
     }
 }
