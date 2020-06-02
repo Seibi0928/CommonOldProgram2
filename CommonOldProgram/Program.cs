@@ -5,9 +5,37 @@ using System.Threading.Tasks;
 
 namespace CommonOldProgram
 {
+    class Program
+    {
+        public static void Main(params string[] args)
+        {
+
+        }
+    }
+    
+    // 外部へ依存している部分を切り出す
+    public class RequestAPIWrapper
+    {
+        private readonly HttpClient client = new HttpClient();
+        private readonly string apiUrl = "https://example.com/2";
+
+        public async Task<(bool isSucess, int cooperatedId)> PostCorporateSetting()
+        {
+            var json = JsonConvert.SerializeObject(this);
+            var content = new StringContent(json, Encoding.UTF8, @"application/json");
+            var response = await client.PostAsync(apiUrl, content);
+            if (response.IsSuccessStatusCode)
+            {
+                var cooperatedId = int.Parse(await response.Content.ReadAsStringAsync());
+                return (true, cooperatedId);
+            }
+
+            return (false, -1);
+        }
+    }
+
     public class CorporateSetting
     {
-        private readonly string apiUrl = "https://example.com/2";
         public string Item1 { get; set; }
         public string Item2 { get; set; }
         /// <summary>
@@ -15,19 +43,22 @@ namespace CommonOldProgram
         /// </summary>
         public int CooperatedId { get; private set; }
 
+        private readonly RequestAPIWrapper api;
+
+        // 切り出した部分をここへ注入
+        public CorporateSetting(RequestAPIWrapper api)
+        {
+            this.api = api;
+        }
+
         // APIへ設定情報を送り、その後に同様の情報をDBへ保存する
         public async Task Save()
         {
-            var client = new HttpClient();
-            var json = JsonConvert.SerializeObject(this);
-            var content = new StringContent(json, Encoding.UTF8, @"application/json");
-            var response = await client.PostAsync(apiUrl, content);
-            if (!response.IsSuccessStatusCode)
+            var (isSucess, cooperatedId) = await api.PostCorporateSetting();
+            if (!isSucess)
             {
                 throw new HttpRequestException("API連携に失敗しました");
             }
-
-            var cooperatedId = int.Parse(await response.Content.ReadAsStringAsync());
 
             await SaveDB(cooperatedId);
         }
